@@ -1,0 +1,91 @@
+Multi-App Project Documentation
+
+Introduction
+
+The primary objective of this project is to gain familiarity with the concept of Docker containerization. The project involves the deployment of four distinct applications—Node.js, Python, Laravel, and Vue.js—each backed by specific databases (PostgreSQL 15, MongoDB 4.4), and Redis (latest version).
+
+Prerequisites
+
+Before embarking on the project, ensure that the following prerequisites are installed on the host machine:
+•	Docker
+•	Docker Compose
+•	Composer (for PHP-FPM)
+Project Setup
+1.	Create a directory named "multi-app" to serve as the container for all project files.
+2.	Inside the "multi-app" directory, create subdirectories for each application:
+•	node
+•	python
+•	laravel
+•	vue
+3.	Place the appropriate code files or sample applications within their respective directories.
+Dockerfile
+In the project's root directory, create a Dockerfile. Follow these steps in the Dockerfile: The Dockerfile is used to build an image for a multi-application project, containing Laravel, Vue.js, Node.js, and Python applications. It installs necessary dependencies and configures the environment for seamless development and deployment.
+Step-by-Step Explanation
+1.	Base Image Selection:
+•	Use the official Ubuntu 22.04 image as the base.
+•	Set the environment variable DEBIAN_FRONTEND to non-interactive mode.
+2.	Update and Install Packages:
+•	Update the package index and install essential packages:
+•	software-properties-common: Common software properties for package management.
+•	nginx: Web server.
+•	composer: Dependency manager for PHP projects.
+•	curl: Command-line tool for transferring data.
+•	nano: Text editor.
+•	PHP 8.1 and Extensions: Install a variety of PHP extensions required for Laravel application.
+•	Python 3 and pip: Install Python interpreter and package manager.
+•	npm: Node.js package manager.
+3.	Install Composer for Laravel:
+•	Download and install Composer.
+•	Move Composer executable to /usr/local/bin.
+4.	Install Node.js and NPM:
+•	Use the NodeSource repository to install Node.js 16.x.
+•	Update the package index and install Node.js and NPM.
+5.	Install Python Dependencies:
+•	Install Python package dependencies from requirements.txt located in the Python app directory.
+6.	Copy Nginx Configuration:
+•	Copy the default file to /etc/nginx/sites-enabled/ for Nginx configuration.
+7.	Copy Application Files:
+•	Copy application files to appropriate directories:
+•	Laravel app to /var/www/html/laravel.
+•	Vue.js app to /var/www/html/vue.
+•	Node.js app to /var/www/html/node.
+•	Python app to /var/www/html/python.
+8.	Expose Port:
+•	Expose port 80 to allow external access to the container.
+9.	Start Services:
+•	Launch services including PHP-FPM, Node.js, and Python.
+•	Start Nginx with daemon off mode.
+Docker Compose
+This docker-compose.yml file is used to orchestrate a multi-container environment for a project that includes PostgreSQL, MongoDB, Redis, and the Multi App image built from the provided Dockerfile. The project's components are defined as services, each running in its own container.
+NGINX Configuration Documentation - Multi App Project
+This NGINX configuration file defines how the NGINX web server will handle incoming requests and route them to the appropriate application components within the Multi App project. Each application (PHP, Vue.js, Node.js, Python) is given a specific route and proxy configuration to ensure proper functionality.
+Server Block:
+•	The server block listens on port 80 and responds to requests under the localhost server name.
+•	The root directory is set to /var/www/html/vue/myapp/dist, which is the directory where the Vue.js app's build output is located.
+•	The index directive specifies the order in which index files are searched.
+PHP Application Route (/php/):
+•	Requests to /php/ are proxied to the Laravel PHP application.
+•	The alias directive points to the Laravel's public directory.
+•	The try_files directive attempts to find matching files or routes in Laravel's public directory.
+•	Requests with .php extensions are handled separately with FastCGI configuration to execute PHP scripts.
+Vue.js Application Route (/vue/):
+•	Requests to /vue/ are proxied to the Vue.js application running on port 8080.
+•	The proxy_pass directive sends the request to the Vue.js app's development server.
+•	The try_files directive attempts to find matching files or routes in the Vue.js app.
+Node.js Application Route (/node/):
+•	Requests to /node/ are proxied to the Node.js application running on port 3000.
+•	The proxy_http_version and other proxy headers are set to handle WebSocket upgrades.
+Python Application Route (/python/):
+•	Requests to /python/ are proxied to the Python application running on port 5000.
+•	Proxy headers are set to ensure proper communication between NGINX and the Python app.
+Building and Running
+Building the Docker Images
+To build the Docker images from the Dockerfile, execute the following command in the project's root directory:  docker-compose up -d –build
+
+Accessing Applications
+Once the containers are up and running, you can access each application using the following URLs:
+•	Node.js: http://localhost/node
+•	Python: http://localhost/python
+•	Laravel: http://localhost/laravel
+•	Vue.js: http://localhost/vue
+
